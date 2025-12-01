@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import Header from "../Components/Header";
+import "../assets/animation.css";
 import axios from "axios";
 
 export default function Register() {
+  // initialing the loader usestate
+  const [load, setLoad] = useState(false);
+
   // initialize usestate to capture user entries
   const [formdata, setFormdata] = useState({
     firstname: "",
@@ -13,36 +17,38 @@ export default function Register() {
     password: "",
     confirm: "",
     gender: "",
-    role: "",
-
-  });
-
-  // initialize usestate to capture errors
-  const [errors, setErrors] = useState({
-    firstname: "",
-    middlename: "",
-    surname: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirm: "",
-    gender: "",
     user_role: "",
-
   });
+
+  // // initialize usestate to capture errors
+  // const [errors, setErrors] = useState({
+  //   firstname: "",
+  //   middlename: "",
+  //   surname: "",
+  //   email: "",
+  //   phone: "",
+  //   password: "",
+  //   confirm: "",
+  //   gender: "",
+  //   user_role: "",
+
+  // });
+  const [errors, setErrors] = useState({});
 
   // capturing user entries
   const handleChange = (e) => {
     setFormdata({
-      ...formdata, [e.target.name]: e.target.value,
-    })
-  }
+      ...formdata,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   // Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoad(true);
     try {
-      const result = await axios.post('http://localhost:8000/api/register',{
+      const result = await axios.post("http://localhost:8000/api/register", {
         firstname: formdata.firstname,
         middlename: formdata.middlename,
         surname: formdata.surname,
@@ -51,25 +57,29 @@ export default function Register() {
         confirm: formdata.confirm,
         phone: formdata.phone,
         gender: formdata.gender,
-        user_role: formdata.role,
+        user_role: formdata.user_role,
       });
-      console.log(result.response.data);
-    } catch(error) {
-      // console.log(error.response.data.errors);
+      console.log(result);
+      // console.log(result.response.data);
+      alert(result.data.message)
+      setErrors({});
+    } catch (error) {
       setErrors(error.response.data.errors);
+      alert(error.response.data.message);
+
+    } finally {
+      setLoad(false);
     }
-
-
-  }
+  };
 
   console.log(formdata);
-  console.log(errors)
+  console.log(errors);
 
   return (
     <>
       <Header />
-      <section className="bg-gray-50 dark:bg-gray-900 mt-60">
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <section className="bg-gray-50 dark:bg-gray-900">
+        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
           <a
             href="#"
             className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
@@ -89,6 +99,7 @@ export default function Register() {
               <form className="space-y-4 md:space-y-6" action="#">
                 {/* Firstname */}
                 <div>
+                  {/* <div className="loader"></div> */}
                   <label
                     for="firstname"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -100,10 +111,15 @@ export default function Register() {
                     name="firstname"
                     id="firstname"
                     onChange={handleChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className={`bg-gray-50 border  text-sm rounded-lg  block w-full p-2.5 dark:placeholder-gray-400 dark:text-white ${
+                      errors.firstname
+                        ? "dark:focus:ring-red-500 dark:focus:border-red-500 focus:ring-red-600 focus:border-red-600 text-red-900 border-red-300 dark:bg-red-700 dark:border-red-600 "
+                        : "dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:ring-blue-600 focus:border-blue-600 text-gray-900 border-gray-300 dark:bg-gray-700 dark:border-gray-600 "
+                    }`}
                     placeholder="John"
                     required=""
                   />
+                  <span className="text-red-600">{errors.firstname}</span>
                 </div>
 
                 {/* Middlename */}
@@ -119,9 +135,14 @@ export default function Register() {
                     name="middlename"
                     id="middlename"
                     onChange={handleChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className={`bg-gray-50 border  text-sm rounded-lg  block w-full p-2.5 dark:placeholder-gray-400 dark:text-white ${
+                      errors.middlename
+                        ? "dark:focus:ring-red-500 dark:focus:border-red-500 focus:ring-red-600 focus:border-red-600 text-red-900 border-red-300 dark:bg-red-700 dark:border-red-600 "
+                        : "dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:ring-blue-600 focus:border-blue-600 text-gray-900 border-gray-300 dark:bg-gray-700 dark:border-gray-600 "
+                    }`}
                     placeholder="Smith (Optional)"
                   />
+                  <span className="text-red-600">{errors.middlename}</span>
                 </div>
 
                 {/* Surname */}
@@ -137,10 +158,15 @@ export default function Register() {
                     name="surname"
                     id="surname"
                     onChange={handleChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className={`bg-gray-50 border  text-sm rounded-lg  block w-full p-2.5 dark:placeholder-gray-400 dark:text-white ${
+                      errors.surname
+                        ? "dark:focus:ring-red-500 dark:focus:border-red-500 focus:ring-red-600 focus:border-red-600 text-red-900 border-red-300 dark:bg-red-700 dark:border-red-600 "
+                        : "dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:ring-blue-600 focus:border-blue-600 text-gray-900 border-gray-300 dark:bg-gray-700 dark:border-gray-600 "
+                    }`}
                     placeholder="Doe"
                     required=""
                   />
+                  <span className="text-red-600">{errors.surname}</span>
                 </div>
 
                 {/* Email address */}
@@ -156,10 +182,15 @@ export default function Register() {
                     name="email"
                     id="email"
                     onChange={handleChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className={`bg-gray-50 border  text-sm rounded-lg  block w-full p-2.5 dark:placeholder-gray-400 dark:text-white ${
+                      errors.email
+                        ? "dark:focus:ring-red-500 dark:focus:border-red-500 focus:ring-red-600 focus:border-red-600 text-red-900 border-red-300 dark:bg-red-700 dark:border-red-600 "
+                        : "dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:ring-blue-600 focus:border-blue-600 text-gray-900 border-gray-300 dark:bg-gray-700 dark:border-gray-600 "
+                    }`}
                     placeholder="name@company.com"
                     required=""
                   />
+                  <span className="text-red-600">{errors.email}</span>
                 </div>
 
                 {/* Password */}
@@ -176,9 +207,14 @@ export default function Register() {
                     id="password"
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className={`bg-gray-50 border  text-sm rounded-lg  block w-full p-2.5 dark:placeholder-gray-400 dark:text-white ${
+                      errors.password
+                        ? "dark:focus:ring-red-500 dark:focus:border-red-500 focus:ring-red-600 focus:border-red-600 text-red-900 border-red-300 dark:bg-red-700 dark:border-red-600 "
+                        : "dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:ring-blue-600 focus:border-blue-600 text-gray-900 border-gray-300 dark:bg-gray-700 dark:border-gray-600 "
+                    }`}
                     required=""
                   />
+                  <span className="text-red-600">{errors.password}</span>
                 </div>
 
                 {/* Confirm Password */}
@@ -195,9 +231,14 @@ export default function Register() {
                     id="confirm"
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className={`bg-gray-50 border  text-sm rounded-lg  block w-full p-2.5 dark:placeholder-gray-400 dark:text-white ${
+                      errors.confirm
+                        ? "dark:focus:ring-red-500 dark:focus:border-red-500 focus:ring-red-600 focus:border-red-600 text-red-900 border-red-300 dark:bg-red-700 dark:border-red-600 "
+                        : "dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:ring-blue-600 focus:border-blue-600 text-gray-900 border-gray-300 dark:bg-gray-700 dark:border-gray-600 "
+                    }`}
                     required=""
                   />
+                  <span className="text-red-600">{errors.confirm}</span>
                 </div>
 
                 {/* Phone */}
@@ -213,10 +254,15 @@ export default function Register() {
                     name="phone"
                     id="phone"
                     onChange={handleChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className={`bg-gray-50 border  text-sm rounded-lg  block w-full p-2.5 dark:placeholder-gray-400 dark:text-white ${
+                      errors.phone
+                        ? "dark:focus:ring-red-500 dark:focus:border-red-500 focus:ring-red-600 focus:border-red-600 text-red-900 border-red-300 dark:bg-red-700 dark:border-red-600 "
+                        : "dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:ring-blue-600 focus:border-blue-600 text-gray-900 border-gray-300 dark:bg-gray-700 dark:border-gray-600 "
+                    }`}
                     placeholder="John"
                     required=""
                   />
+                  <span className="text-red-600">{errors.phone}</span>
                 </div>
 
                 {/* Gender */}
@@ -231,33 +277,43 @@ export default function Register() {
                     id="gender"
                     name="gender"
                     onChange={handleChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className={`bg-gray-50 border  text-sm rounded-lg  block w-full p-2.5 dark:placeholder-gray-400 dark:text-white ${
+                      errors.gender
+                        ? "dark:focus:ring-red-500 dark:focus:border-red-500 focus:ring-red-600 focus:border-red-600 text-red-900 border-red-300 dark:bg-red-700 dark:border-red-600 "
+                        : "dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:ring-blue-600 focus:border-blue-600 text-gray-900 border-gray-300 dark:bg-gray-700 dark:border-gray-600 "
+                    }`}
                   >
                     <option selected>Choose a gender</option>
                     <option value="Male">Okunrin</option>
                     <option value="Female">Obirin</option>
                     <option value="Others">Mayowa</option>
                   </select>
+                  <span className="text-red-600">{errors.gender}</span>
                 </div>
 
                 {/* Role */}
                 <div>
                   <label
-                    for="role"
+                    for="user_role"
                     className="block mb-2.5 text-sm font-medium text-heading"
                   >
                     Select Role
                   </label>
                   <select
-                    id="role"
-                    name="role"
+                    id="user_role"
+                    name="user_role"
                     onChange={handleChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className={`bg-gray-50 border  text-sm rounded-lg  block w-full p-2.5 dark:placeholder-gray-400 dark:text-white ${
+                      errors.user_role
+                        ? "dark:focus:ring-red-500 dark:focus:border-red-500 focus:ring-red-600 focus:border-red-600 text-red-900 border-red-300 dark:bg-red-700 dark:border-red-600 "
+                        : "dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:ring-blue-600 focus:border-blue-600 text-gray-900 border-gray-300 dark:bg-gray-700 dark:border-gray-600 "
+                    }`}
                   >
                     <option selected>Choose a role</option>
                     <option value="user">User</option>
                     <option value="vendor">Vendor</option>
                   </select>
+                  <span className="text-red-600">{errors.user_role}</span>
                 </div>
 
                 {/* Term & Condition */}
@@ -293,7 +349,7 @@ export default function Register() {
                   onClick={handleSubmit}
                   className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
-                  Create an account
+                  {load ? <div className="loader"></div> : "Create an account"}
                 </button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Already have an account?{" "}
