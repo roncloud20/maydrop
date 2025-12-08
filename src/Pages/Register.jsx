@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import Header from "../Components/Header";
 import "../assets/animation.css";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   // initialing the loader usestate
   const [load, setLoad] = useState(false);
+
+  // Initializing nagivate
+  const navigate = useNavigate();
 
   // initialize usestate to capture user entries
   const [formdata, setFormdata] = useState({
@@ -61,8 +65,12 @@ export default function Register() {
       });
       console.log(result);
       // console.log(result.response.data);
-      alert(result.data.message)
-      setErrors({});
+      if (result.status == 201) {
+        setErrors({});
+        alert(result.data.message);
+        navigate(`/verify?email=${formdata.email}`)
+
+      }
     } catch (error) {
       setErrors(error.response.data.errors);
       alert(error.response.data.message);
@@ -349,7 +357,7 @@ export default function Register() {
                   onClick={handleSubmit}
                   className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
-                  {load ? <div className="loader"></div> : "Create an account"}
+                  {load ? <div><div className="loader"></div></div> : "Create an account"}
                 </button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Already have an account?{" "}
