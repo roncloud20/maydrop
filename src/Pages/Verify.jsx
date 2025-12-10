@@ -32,8 +32,8 @@ export default function Verify() {
         setMsg(response.data.message);
         setError("");
         setTimeout(() => {
-          navigate('/');
-        }, 5000);
+          navigate('/login');
+        }, 2000);
 
       }
     } catch (err) {

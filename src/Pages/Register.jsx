@@ -24,19 +24,7 @@ export default function Register() {
     user_role: "",
   });
 
-  // // initialize usestate to capture errors
-  // const [errors, setErrors] = useState({
-  //   firstname: "",
-  //   middlename: "",
-  //   surname: "",
-  //   email: "",
-  //   phone: "",
-  //   password: "",
-  //   confirm: "",
-  //   gender: "",
-  //   user_role: "",
 
-  // });
   const [errors, setErrors] = useState({});
 
   // capturing user entries
@@ -64,12 +52,10 @@ export default function Register() {
         user_role: formdata.user_role,
       });
       console.log(result);
-      // console.log(result.response.data);
       if (result.status == 201) {
         setErrors({});
         alert(result.data.message);
-        navigate(`/verify?email=${formdata.email}`)
-
+        navigate(`/verify?email=${formdata.email}`);
       }
     } catch (error) {
       setErrors(error.response.data.errors);
